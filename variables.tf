@@ -1,16 +1,3 @@
-# AWS-VPC-terraform-module
-Terraform module to deploy a AWS VPC
-
-## USAGE
-```
-module "aws_vpc" {
-    source          = "github.com/erozedguy/AWS-VPC-terraform-module.git"
-    networking      = var.networking
-    security_groups = var.security_groups
-}
-```
-##### Variables
-```
 variable "networking" {
   type = object({
     cidr_block      = string
@@ -86,4 +73,3 @@ variable "security_groups" {
     ]
   }]
 }
-```
