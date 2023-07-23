@@ -4,7 +4,7 @@ Terraform module to deploy a AWS VPC
 ## USAGE
 ```
 module "aws_vpc" {
-    source          = "https://github.com/Stephvan/terraform-vpc.git"
+    source          = "github.com/Stephvan/terraform-vpc.git"
     networking      = var.networking
     security_groups = var.security_groups
 }

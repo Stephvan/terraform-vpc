@@ -15,7 +15,7 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public_subnet-${count.index}"
+    Name = "${var.public_subnet_name}-${count.index}"
   }
 }
 
@@ -28,7 +28,7 @@ resource "aws_subnet" "private_subnets" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "private_subnet-${count.index}"
+    Name = "${var.private_subnet_name}-${count.index}"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_internet_gateway" "i_gateway" {
   vpc_id = aws_vpc.custom_vpc.id
 
   tags = {
-    Name = "i_gateway"
+    Name = var.internet_gateway_name
   }
 }
 
@@ -48,7 +48,7 @@ resource "aws_eip" "elastic_ip" {
   depends_on = [aws_internet_gateway.i_gateway]
 
   tags = {
-    Name = "eip-${count.index}"
+    Name = "${var.eip_name}-${count.index}"
   }
 }
 
@@ -70,6 +70,10 @@ resource "aws_route" "public_routes" {
   route_table_id         = aws_route_table.public_table.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.i_gateway.id
+
+  tags = {
+    Name = var.public_route_table_name
+  }
 }
 
 resource "aws_route_table_association" "assoc_public_routes" {
@@ -82,6 +86,16 @@ resource "aws_route_table_association" "assoc_public_routes" {
 resource "aws_route_table" "private_tables" {
   count  = length(var.networking.azs)
   vpc_id = aws_vpc.custom_vpc.id
+
+    dynamic "tags" {
+    for_each = {
+      Name = "${var.private_route_table_name}-${count.index}"
+    }
+    content {
+      key   = tags.key
+      value = tags.value
+    }
+  }
 }
 
 resource "aws_route" "private_routes" {
