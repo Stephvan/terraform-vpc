@@ -71,9 +71,6 @@ resource "aws_route" "public_routes" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.i_gateway.id
 
-  tags = {
-    Name = var.public_route_table_name
-  }
 }
 
 resource "aws_route_table_association" "assoc_public_routes" {
@@ -86,16 +83,6 @@ resource "aws_route_table_association" "assoc_public_routes" {
 resource "aws_route_table" "private_tables" {
   count  = length(var.networking.azs)
   vpc_id = aws_vpc.custom_vpc.id
-
-    dynamic "tags" {
-    for_each = {
-      Name = "${var.private_route_table_name}-${count.index}"
-    }
-    content {
-      key   = tags.key
-      value = tags.value
-    }
-  }
 }
 
 resource "aws_route" "private_routes" {
